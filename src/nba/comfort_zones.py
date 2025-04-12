@@ -5,7 +5,7 @@ from pyspark.ml.evaluation import ClusteringEvaluation
 
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
-from pyspark.sql.functions import col, udf
+from pyspark.sql.functions import col, udf, countDistinct, sum #note we overwrite native python sum
 from pyspark.sql.types import StringType
 
 import sys
@@ -24,7 +24,7 @@ def fix_defender_name(name):
     return name.title()  #capitalization done anyway
 
 
-
+#spark builder
 #remove .master when testing on cloud
 spark = (
     SparkSession.builder
@@ -47,7 +47,6 @@ df = (
         col("CLOSEST_DEFENDER"),
         col("CLOSE_DEF_DIST"),
         col("SHOT_CLOCK"),
-
     )
 )
 
@@ -67,13 +66,41 @@ for current_cols, new_cols in zip(current_col_names, new_col_names):
 
 
 ## Train KMeans
+kmeans = KMeans().setK(4).setSeed(20250512)
+model = kmeans.fit(df)
 
 ## Predict
+predictions = model.transform
+
 
 ## Evaluate
+evaluator = ClusteringEvaluation()
+silhouette = evaluator.evaludate(predictions)
+
+print("Silhouette with squared euclidian distance = " + str(silhouette))
 
 ## Display Result
+centers = model.clusterCenters()
+print("Cluster Centers: ")
+for center in centers:
+    print(center)
+
+spark.stop()
 
 ## Filter Player and Display
 
 ## Stop Condition
+
+
+
+## How to aggregate
+aggregations_pyspark = (
+    df
+    .groupBy("closest_defender").agg(
+        count("*").alias("row_count") #wildcard
+        countDistinct("closest_defender").alias("most_unique_defensemen"),
+        avg("shot_clock").alias("avg_shot_clock"),
+        sum("shot_clock").alias("shot_time_evenst") #this proves nothin
+        
+    )
+)
