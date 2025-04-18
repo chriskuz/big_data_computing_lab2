@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PROJECT_DIR="/mapreduce-test/mapreduce-project1/big_data_project_1"
+PROJECT_DIR="/spark-examples/spark-lab2/big_data_computing_lab2"
 DATA_DIR="$PROJECT_DIR/data"
 
 # === Prep directory ===
@@ -12,4 +12,4 @@ cd "$DATA_DIR" || { echo "Failed data directory access"; exit 1; }
 APP_TOKEN="tzksBXvIq9l9Ub985hzK3D5HP"
 API_URL="https://data.cityofnewyork.us/resource/pvqr-7yc4.csv?\$limit=10000000"
 
-curl -v -H "X-App-Token: $APP_TOKEN" "$API_URL" -o "$DATA_DIR/data.csv"
+curl -v -H "X-App-Token: $APP_TOKEN" "$API_URL" -o "$DATA_DIR/parking_data.csv"
