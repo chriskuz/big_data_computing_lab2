@@ -6,7 +6,7 @@ from pyspark.ml.evaluation import ClusteringEvaluator
 
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
-from pyspark.sql.functions import col, udf, countDistinct, sum, count, mean, median #note we overwrite native python sum
+from pyspark.sql.functions import col, udf, countDistinct, sum, count, mean, median, isnan #note we overwrite native python sum
 from pyspark.sql.types import StringType
 
 import sys
@@ -62,8 +62,6 @@ df = df.withColumn("closest_defender", fix_defender_name_udf(col("CLOSEST_DEFEND
 #goodbye nulls
 df = df.dropna()
 
-df.show()
-
 
 #column renaming
 current_col_names = ["CLOSE_DEF_DIST", "SHOT_CLOCK", "SHOT_DIST"]
@@ -78,59 +76,69 @@ df = df.withColumn("shot_clock", col("shot_clock").cast("double"))
 df = df.withColumn("shot_dist", col("shot_dist").cast("double"))
 
 
+
+df = df.filter(
+    ~(
+        isnan("close_def_dist") |
+        isnan("shot_clock") |
+        isnan("shot_dist")
+    )
+)
+
+
+
 assembler = VectorAssembler(
     inputCols=["close_def_dist", "shot_clock", "shot_dist"],
     outputCol="features"
 )
 df_features = assembler.transform(df)
 
-
 df.show()
 df_features.show()
 
 ## Train KMeans
-kmeans = KMeans(k=3, featuresCol="features", predictionCol="cluster").setSeed(20250512)
+kmeans = KMeans(k=4, featuresCol="features", predictionCol="cluster").setSeed(20250512)
 model = kmeans.fit(df_features)
 
-## Predict
-predictions = model.transform(df_features)
+# ## Predict
+# predictions = model.transform(df_features)
 
 
-## Evaluate
-evaluator = ClusteringEvaluator()
-silhouette = evaluator.evaluate(predictions)
+# ## Evaluate
+# evaluator = ClusteringEvaluator()
+# silhouette = evaluator.evaluate(predictions)
 
-print("Silhouette with squared euclidian distance = " + str(silhouette))
+# print("Silhouette with squared euclidian distance = " + str(silhouette))
 
-## Display Result
-centers = model.clusterCenters()
-print("Cluster Centers: ")
-for center in centers:
-    print(center)
-
-
+# ## Display Result
+# centers = model.clusterCenters()
+# print("Cluster Centers: ")
+# for center in centers:
+#     print(center)
 
 
 
-## How to aggregate
-print("AGGREGATION EXAMPLES")
-aggregations_pyspark = (
-    df
-    .groupBy("player_name").agg(
-        count("*").alias("row_count"), #wildcard
-        countDistinct("closest_defender").alias("useless_unique_def_dist_counts"),
-        sum("shot_clock").alias("useless_sum"), #this proves nothin
-        mean("shot_clock").alias("avg_shot_clock"),
-        median("shot_clock").alias("median_shot_clock")
+
+
+# ## How to aggregate
+# print("AGGREGATION EXAMPLES")
+# aggregations_pyspark = (
+#     df
+#     .groupBy("player_name").agg(
+#         count("*").alias("row_count"), #wildcard
+#         countDistinct("closest_defender").alias("useless_unique_def_dist_counts"),
+#         sum("shot_clock").alias("useless_sum"), #this proves nothin
+#         mean("shot_clock").alias("avg_shot_clock"),
+#         median("shot_clock").alias("median_shot_clock")
         
-    )
-).show()
+#     )
+# ).show()
 
-spark.stop()
+# spark.stop()
 
-# ## Filter Player and Display
+# # ## Filter Player and Display
 
-# ## Stop Condition
+# # ## Stop Condition
 
 
 
