@@ -91,30 +91,103 @@ assembler = VectorAssembler(
     inputCols=["close_def_dist", "shot_clock", "shot_dist"],
     outputCol="features"
 )
-df_features = assembler.transform(df)
-
-df.show()
-df_features.show()
+df_features = assembler.transform(df).cache()
+df_features.count()
 
 ## Train KMeans
 kmeans = KMeans(k=4, featuresCol="features", predictionCol="cluster").setSeed(20250512)
 model = kmeans.fit(df_features)
 
-# ## Predict
-# predictions = model.transform(df_features)
+
+## Predict
+predictions = model.transform(df_features)
 
 
-# ## Evaluate
-# evaluator = ClusteringEvaluator()
-# silhouette = evaluator.evaluate(predictions)
+## Evaluate
+evaluator = ClusteringEvaluator()
+silhouette = evaluator.evaluate(predictions)
 
-# print("Silhouette with squared euclidian distance = " + str(silhouette))
+print("Silhouette with squared euclidian distance = " + str(silhouette))
 
-# ## Display Result
-# centers = model.clusterCenters()
-# print("Cluster Centers: ")
-# for center in centers:
-#     print(center)
+## Display Result
+centers = model.clusterCenters()
+print("Cluster Centers: ")
+for center in centers:
+    print(center)
+
+
+
+
+
+
+
+
+
+
+
+# df.show()
+# df_features.show()
+
+
+
+
+
+
+
+# ##Checking Nulls
+# df.printSchema()
+# df_features.printSchema()
+
+
+# nut_df = (
+#     df
+#     .select(
+#         sum(col("close_def_dist").isNull().cast("int")).alias("null_close_def_dist"),
+#         sum(col("shot_clock").isNull().cast("int")).alias("null_shot_clock"),
+#         sum(col("shot_dist").isNull().cast("int")).alias("null_shot_dist"),
+#     )
+# )
+# nut_df.show()
+
+
+# nut_dff = (
+#     df_features
+#     .select(
+#         sum(col("close_def_dist").isNull().cast("int")).alias("null_close_def_dist"),
+#         sum(col("shot_clock").isNull().cast("int")).alias("null_shot_clock"),
+#         sum(col("shot_dist").isNull().cast("int")).alias("null_shot_dist"),
+#     )
+# )
+# nut_dff.show()
+
+
+
+# nat_df = (
+#     df
+#     .select(
+#         sum(isnan("close_def_dist").cast("int")).alias("null_close_def_dist"),
+#         sum(isnan("shot_clock").cast("int")).alias("null_shot_clock"),
+#         sum(isnan("shot_dist").cast("int")).alias("null_shot_dist"),
+#     )
+# )
+# nat_df.show()
+
+
+# nat_dff = (
+#     df_features
+#     .select(
+#         sum(isnan("close_def_dist").cast("int")).alias("null_close_def_dist"),
+#         sum(isnan("shot_clock").cast("int")).alias("null_shot_clock"),
+#         sum(isnan("shot_dist").cast("int")).alias("null_shot_dist"),
+#     )
+# )
+# nat_dff.show()
+# ###
+
+
+
+
+
 
 
 
