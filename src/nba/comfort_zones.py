@@ -95,7 +95,7 @@ df_features = assembler.transform(df).cache()
 df_features.count()
 
 ## Train KMeans
-kmeans = KMeans(k=4, featuresCol="features", predictionCol="cluster").setSeed(20250512)
+kmeans = KMeans(k=4, featuresCol="features", predictionCol="prediction").setSeed(20250512)
 model = kmeans.fit(df_features)
 
 
@@ -193,21 +193,23 @@ for center in centers:
 
 
 
-# ## How to aggregate
-# print("AGGREGATION EXAMPLES")
-# aggregations_pyspark = (
-#     df
-#     .groupBy("player_name").agg(
-#         count("*").alias("row_count"), #wildcard
-#         countDistinct("closest_defender").alias("useless_unique_def_dist_counts"),
-#         sum("shot_clock").alias("useless_sum"), #this proves nothin
-#         mean("shot_clock").alias("avg_shot_clock"),
-#         median("shot_clock").alias("median_shot_clock")
+## How to aggregate
+print("AGGREGATION EXAMPLES")
+aggregations_pyspark = (
+    df
+    .groupBy("player_name").agg(
+        count("*").alias("row_count"), #wildcard
+        countDistinct("closest_defender").alias("useless_unique_def_dist_counts"),
+        sum("shot_clock").alias("useless_sum"), #this proves nothin
+        mean("shot_clock").alias("avg_shot_clock"),
+        median("shot_clock").alias("median_shot_clock")
         
-#     )
-# ).show()
+    )
+)
 
-# spark.stop()
+aggregations_pyspark.show()
+
+spark.stop()
 
 # # ## Filter Player and Display
 
