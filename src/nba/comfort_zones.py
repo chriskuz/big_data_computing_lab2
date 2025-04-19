@@ -115,9 +115,6 @@ print("Cluster Centers: ")
 for center in centers:
     print(center)
 
-
-
-
 ## How to aggregate
 print("AGGREGATION EXAMPLES")
 aggregations_pyspark = (
