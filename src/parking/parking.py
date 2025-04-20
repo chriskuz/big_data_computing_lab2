@@ -1,4 +1,3 @@
-# parking.py
 #!/usr/bin/env python3
 from __future__ import print_function
 import sys
@@ -23,15 +22,19 @@ def convert_to_24_hour(time_str):
         return None
     return hh
 
-def is_not_none(hour):
-    return hour is not None
+def is_not_none(x):
+    return x is not None
 
-def to_pair(hour):
-    return (hour, 1)
+def to_pair(x):
+    return (x, 1)
+
+def pick_max(a, b):
+    # each is a (hour, count) tuple
+    return a if a[1] > b[1] else b
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
-        print("Usage: parking.py <input-csv> <parallelism>", file=sys.stderr)
+        print("Usage: parking.py <input‑csv> <parallelism>", file=sys.stderr)
         sys.exit(-1)
 
     input_path  = sys.argv[1]
@@ -44,18 +47,16 @@ if __name__ == "__main__":
     df = spark.read.csv(input_path, header=True).repartition(parallelism)
     times_rdd = df.select("violation_time").rdd.map(lambda r: r[0])
 
-    counts = (times_rdd
-        .map(convert_to_24_hour)
-        .filter(is_not_none)
-        .map(to_pair)
-        .reduceByKey(add, numPartitions=parallelism)
+    counts = (
+        times_rdd
+          .map(convert_to_24_hour)
+          .filter(is_not_none)
+          .map(to_pair)
+          .reduceByKey(add, numPartitions=parallelism)
     )
 
-    # find the hour with the max count
-    max_hour, max_count = counts.reduce(lambda x, y: x if x[1] > y[1] else y)
+    max_hour, max_count = counts.reduce(pick_max)
 
-    # write result as a single text file to the given output path
-    # we’ll just print it to stdout and let the caller redirect
     print(f"{max_hour},{max_count}")
 
     spark.stop()
