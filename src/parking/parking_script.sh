@@ -4,36 +4,33 @@ set -e
 source ../../../../env.sh
 
 IN_DIR=/spark-lab2/input
-PROJECT_DIR="/spark-examples/spark-lab2/big_data_computing_lab2"
-DATA_DIR="$PROJECT_DIR/data"
-OUTPUT_DIR="$PROJECT_DIR/output"
+DATA_DIR="/spark-examples/spark-lab2/big_data_computing_lab2/data"
+OUTPUT_DIR="/spark-examples/spark-lab2/big_data_computing_lab2/output"
 
-# prepare HDFS input
+# Stage the CSV into HDFS
 hdfs dfs -rm -r $IN_DIR || true
 hdfs dfs -mkdir -p $IN_DIR
 hdfs dfs -copyFromLocal $DATA_DIR/parking_data.csv $IN_DIR/
 
-# prepare local output directory
+# Ensure local output dir exists
 mkdir -p $OUTPUT_DIR
 
-# loop over parallelism levels
 for P in 2 3 4 5; do
-  echo "=== Level of parallelism: $P ===" > $OUTPUT_DIR/result_P${P}.txt
+  OUT_FILE=$OUTPUT_DIR/result_P${P}.txt
+  echo "Parallelism $P:" > $OUT_FILE
 
-  # run job, redirecting the single-line result into our output file
   $SPARK_HOME/bin/spark-submit \
     --master spark://$SPARK_MASTER:7077 \
     --deploy-mode client \
     --conf spark.default.parallelism=$P \
     --conf spark.sql.shuffle.partitions=$P \
-    ./parking.py \
+    parking.py \
       hdfs://$SPARK_MASTER:9000$IN_DIR/parking_data.csv \
       $P \
-    >> $OUTPUT_DIR/result_P${P}.txt
+    >> $OUT_FILE
 
-  echo "" >> $OUTPUT_DIR/result_P${P}.txt
+  echo "" >> $OUT_FILE
 done
 
-# once all runs are done, print the directory contents
-echo ">>> All results:"
+echo "=== All Results ==="
 cat $OUTPUT_DIR/*.txt
