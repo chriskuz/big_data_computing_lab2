@@ -4,6 +4,10 @@ import sys
 from operator import add
 from pyspark.sql import SparkSession
 
+def extract_violation_time(row):
+    """Pull the string out of the single‑column Row."""
+    return row[0]
+
 def convert_to_24_hour(time_str):
     if not time_str or len(time_str) < 5:
         return None
@@ -29,12 +33,12 @@ def to_pair(x):
     return (x, 1)
 
 def pick_max(a, b):
-    # each is a (hour, count) tuple
+    # a and b are (hour, count) tuples
     return a if a[1] > b[1] else b
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
-        print("Usage: parking.py <input‑csv> <parallelism>", file=sys.stderr)
+        print("Usage: parking.py <input-csv> <parallelism>", file=sys.stderr)
         sys.exit(-1)
 
     input_path  = sys.argv[1]
@@ -45,14 +49,14 @@ if __name__ == "__main__":
     spark.conf.set("spark.sql.shuffle.partitions", parallelism)
 
     df = spark.read.csv(input_path, header=True).repartition(parallelism)
-    times_rdd = df.select("violation_time").rdd.map(lambda r: r[0])
+    times_rdd = df.select("violation_time").rdd.map(extract_violation_time)
 
     counts = (
         times_rdd
-          .map(convert_to_24_hour)
-          .filter(is_not_none)
-          .map(to_pair)
-          .reduceByKey(add, numPartitions=parallelism)
+        .map(convert_to_24_hour)
+        .filter(is_not_none)
+        .map(to_pair)
+        .reduceByKey(add, numPartitions=parallelism)
     )
 
     max_hour, max_count = counts.reduce(pick_max)
