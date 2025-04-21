@@ -39,7 +39,12 @@ spark = (
 
 
 ## Load Data
-df = spark.read.format("csv").option("header", True).load("../../data/shot_logs.csv") #.load(sys.argv[1]) #look into again why sys.argv here
+
+#For local
+# df = spark.read.format("csv").option("header", True).load("../../data/shot_logs.csv") #.load(sys.argv[1]) #look into again why sys.argv here
+
+#For cloud
+df = spark.read.format("csv").option("header", True).load("../../data/shot_logs.csv")
 
 
 ## Pre Filtering 
