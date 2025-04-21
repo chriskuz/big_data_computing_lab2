@@ -8,7 +8,7 @@ from pyspark.ml.evaluation import ClusteringEvaluator
 
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
-from pyspark.sql.functions import col, udf, countDistinct, sum, count, mean, median, isnan #note we overwrite native python sum
+from pyspark.sql.functions import col, udf, countDistinct, sum, count, mean, isnan #note we overwrite native python sum
 from pyspark.sql.types import StringType
 
 import sys
@@ -126,7 +126,7 @@ aggregations_pyspark = (
         countDistinct("closest_defender").alias("useless_unique_def_dist_counts"),
         sum("shot_clock").alias("useless_sum"), #this proves nothin
         mean("shot_clock").alias("avg_shot_clock"),
-        median("shot_clock").alias("median_shot_clock")
+        # median("shot_clock").alias("median_shot_clock")
         
     )
 )
