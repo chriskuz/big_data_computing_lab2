@@ -1,5 +1,5 @@
 #!/bin/bash
-source ../../../../../env.sh
+source ../../../../env.sh
 /usr/local/hadoop/bin/hdfs dfs -rm -r /kmeans/input/
 /usr/local/hadoop/bin/hdfs dfs -mkdir -p /kmeans/input/
 /usr/local/hadoop/bin/hdfs dfs -copyFromLocal ../../data/shot_logs.csv /kmeans/input/
