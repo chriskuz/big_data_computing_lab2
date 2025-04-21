@@ -1,6 +1,4 @@
 #!/usr/bin/env python3
-
-
 ### IMPORTS ###
 from __future__ import print_function
 from pyspark.ml.clustering import KMeans
