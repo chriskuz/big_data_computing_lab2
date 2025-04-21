@@ -41,8 +41,8 @@ def title_player(name):
 spark = (
     SparkSession.builder
     .appName("comfort_zone_generator")
-    .master("local[*]") #DOUBLE CHECK WHAT THIS DOES ON CLOUD
-    .config("spark.driver.bindAddress", "127.0.0.1") #REMOVE ON CLOUD
+    # .master("local[*]") #DOUBLE CHECK WHAT THIS DOES ON CLOUD
+    # .config("spark.driver.bindAddress", "127.0.0.1") #REMOVE ON CLOUD
     .getOrCreate()
 )
 
@@ -56,11 +56,11 @@ spark = (
 ## Load Data
 
 #LOCAL
-df = spark.read.format("csv").option("header", True).load("../../data/shot_logs.csv") #.load(sys.argv[1]) #look into again why sys.argv here
+# df = spark.read.format("csv").option("header", True).load("../../data/shot_logs.csv") #.load(sys.argv[1]) #look into again why sys.argv here
 
 #CLOUD COMMAND
-# df_path = sys.argv[1]
-# df = spark.read.format("csv").option("header", True).load(df_path)
+df_path = sys.argv[1]
+df = spark.read.format("csv").option("header", True).load(df_path)
 
 
 ## Pre Filtering 
@@ -196,6 +196,11 @@ predictions.show()
 agg_hit_rate.show()
 
 
+
+
+
+
+
 # ### SAVING ###
 # ## LOCAL SAVING
 # output_path = "../../data/predicted_clusters"
@@ -204,6 +209,11 @@ agg_hit_rate.show()
 
 # #antiquated
 # predictions.write.mode("overwrite").option("header", True).csv(output_path)
+
+
+
+
+
 
 
 
@@ -223,10 +233,6 @@ agg_hit_rate.show()
 # )
 
 # aggregations_pyspark.show()
-
-
-
-# # ## Filter Player and Display
 
 ### STOP ###
 
