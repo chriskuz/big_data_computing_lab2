@@ -36,6 +36,10 @@ spark = (
     .getOrCreate()
 )
 
+#To reduce logs outputted
+sc = spark.sparkContext
+sc.setLogLevel("ERROR")  # or "WARN"
+
 
 
 ## Load Data
