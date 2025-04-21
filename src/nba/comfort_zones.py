@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+
 ### IMPORTS ###
 from __future__ import print_function
 from pyspark.ml.clustering import KMeans
@@ -12,6 +13,7 @@ from pyspark.sql.functions import col, udf, countDistinct, sum, count, mean, isn
 from pyspark.sql.types import StringType
 
 import sys
+from operator import add
 
 
 ### FUNCTIONS ###
