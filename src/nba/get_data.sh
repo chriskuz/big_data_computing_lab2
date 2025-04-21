@@ -1,7 +1,5 @@
 #!/bin/sh
-
-
-PROJECT_DIR="/mapreduce-test/mapreduce-project1/big_data_project_1"
+PROJECT_DIR="/spark-examples/spark-lab2/big_data_computing_lab2"
 DATA_DIR="$PROJECT_DIR/data"
 ZIP_NAME="nba-shot-logs.zip"
 KAGGLE_USER=$(jq -r .username ~/.kaggle/kaggle.json)
