@@ -19,7 +19,7 @@ for P in 2 3 4 5; do
   OUT_FILE=$OUTPUT_DIR/result_P${P}.txt
   echo "Parallelism $P:" > $OUT_FILE
 
-  usr/local/spark/bin/spark-submit \
+  /usr/local/spark/bin/spark-submit \
     --master spark://$SPARK_MASTER:7077 \
     --deploy-mode client \
     --conf spark.default.parallelism=$P \
