@@ -1,9 +1,9 @@
-#### Parking Violations
+## Parking Violations
 
 Using PySpark to answer this question: 
 - When are tickets most likely to be issued?
 
-#### Installation
+## Installation
 
 To get this project working, you need to create a new directory to house the github in the already made "spark-examples" directory. Once the new directory is created, a git clone command is required. This github page houses all the necessary codes, and shell scripts for running all parts of the project.
 

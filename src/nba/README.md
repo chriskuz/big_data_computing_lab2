@@ -41,5 +41,5 @@ All shell scripts should be run within this `nba` directory after the `data` fol
 
 **Running Scripts per Question**
 
-1) Question 1: `./comfor_zones.sh`
+1) Question 1: `./comfort_zones.sh`
 
