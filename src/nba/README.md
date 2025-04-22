@@ -43,6 +43,6 @@ All shell scripts should be run within this `nba` directory after the `data` fol
 
 1) Question 1: `./comfort_zones.sh`
 
-A full video demonstration for this lab will be available at this link:
-https://drive.google.com/drive/folders/1T61-F5ybL2MrzHhIQ0zTORkDHzEQy2Ws?usp=sharing
+
+A full video demonstration for this lab will be available in the report.
 

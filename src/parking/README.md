@@ -13,7 +13,6 @@ To get the data required for the PySpark program, you need to traverse into big_
 
 Once you have the data and are ready to run the PySpark code, travel back into src/parking and locate the parking_script.sh file. This is the shell script for running the necessay components. If you receive a permission denied error, type in the following - chmod +x `<SHELL_FILE_NAME.sh>`. After running this command, you should be able to run the script with no issues.
 
-A full video demonstration for this lab will be available at this link:
-https://drive.google.com/drive/folders/1T61-F5ybL2MrzHhIQ0zTORkDHzEQy2Ws?usp=sharing
+A full video demonstration for this lab will be available in the report.
 
 (note: this program assumes you have the necessary libraries and installations on your cluster.)
