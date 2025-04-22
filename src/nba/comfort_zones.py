@@ -138,7 +138,6 @@ silhouette = evaluator.evaluate(predictions)
 
 
 
-
 ### AGGREGATIONS AND FILTERING
 
 ## Pre-Filter
@@ -156,8 +155,6 @@ agg_hit_rate = (
 
 #
 agg_hit_rate = agg_hit_rate.withColumn("hit_rate", col("made_shots") / col("total_shots"))
-
-
 
 
 
@@ -190,7 +187,6 @@ cluster_df.show(truncate=False)
 
 ## Displaying Predictions
 predictions.show()
-
 
 ## Displaying Aggregations of Hit Rate for Specific Players
 agg_hit_rate.show()

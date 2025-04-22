@@ -10,6 +10,42 @@ from pyspark.sql.types import StringType
 
 import sys
 
+
+### DATA ###
+## Load Data
+
+#LOCAL
+df = spark.read.format("csv").option("header", True).load("../../data/parking_data.csv") #.load(sys.argv[1]) #look into again why sys.argv here
+
+# #CLOUD COMMAND
+# df_path = sys.argv[1]
+# df = spark.read.format("csv").option("header", True).load(df_path)
+
+
+#spark builder
+#remove .master when testing on cloud
+#CHECK ANY OTHER CLOUD BUILDERS NEEDED OR NOT
+spark = (
+    SparkSession.builder
+    .appName("kmeans_parking")
+    # .master("local[*]") #DOUBLE CHECK WHAT THIS DOES ON CLOUD
+    # .config("spark.driver.bindAddress", "127.0.0.1") #REMOVE ON CLOUD
+    .getOrCreate()
+)
+
+#To reduce logs outputted CLOUD
+sc = spark.sparkContext
+sc.setLogLevel("ERROR")  # or "WARN"
+
+
+
+
+## Cleaning
+
+
+
+
+
 ### MODEL ###
 
 ## Vector Assembling
