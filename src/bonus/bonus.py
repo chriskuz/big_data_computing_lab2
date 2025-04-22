@@ -82,7 +82,7 @@ sc.setLogLevel("ERROR")  # or "WARN"
 ## Load Data
 
 #LOCAL
-df = spark.read.format("csv").option("header", True).load("../../data/parking_data.csv") #.load(sys.argv[1]) #look into again why sys.argv here
+df = spark.read.format("csv").option("header", True).load("/Users/alinazim/Documents/GitHub/big_data_computing_lab2/data/parking_data.csv") #.load(sys.argv[1]) #look into again why sys.argv here
 
 # #CLOUD COMMAND
 # df_path = sys.argv[1]
