@@ -65,8 +65,8 @@ def normalize_color(raw_color):
 spark = (
     SparkSession.builder
     .appName("kmeans_parking")
-    .master("local[*]") #DOUBLE CHECK WHAT THIS DOES ON CLOUD
-    .config("spark.driver.bindAddress", "127.0.0.1") #REMOVE ON CLOUD
+    # .master("local[*]") #DOUBLE CHECK WHAT THIS DOES ON CLOUD
+    # .config("spark.driver.bindAddress", "127.0.0.1") #REMOVE ON CLOUD
     .getOrCreate()
 )
 
@@ -81,12 +81,12 @@ sc.setLogLevel("ERROR")  # or "WARN"
 ### DATA ###
 ## Load Data
 
-#LOCAL
-df = spark.read.format("csv").option("header", True).load("../../data/parking_data.csv") #.load(sys.argv[1]) #look into again why sys.argv here
+# #LOCAL
+# df = spark.read.format("csv").option("header", True).load("../../data/parking_data.csv") #.load(sys.argv[1]) #look into again why sys.argv here
 
-# #CLOUD COMMAND
-# df_path = sys.argv[1]
-# df = spark.read.format("csv").option("header", True).load(df_path)
+#CLOUD COMMAND
+df_path = sys.argv[1]
+df = spark.read.format("csv").option("header", True).load(df_path)
 
 ## Pre Filtering 
 df = (
