@@ -7,12 +7,12 @@ from pyspark.ml.evaluation import ClusteringEvaluator
 from pyspark.sql import SparkSession, Row
 from pyspark.sql import functions as F
 from pyspark.sql.functions import col, udf, countDistinct, sum, count, mean, isnan, asc, desc, upper, trim #note we overwrite native python sum
-from pyspark.sql.types import StringType
+from pyspark.sql.types import StringType, IntergerType
 
 import sys
 
 ### FUNCTIONS ###
-@udf(returnType=int)
+@udf(returnType=IntegerType())
 def convert_to_24_hour(time_str):
     if not time_str or len(time_str) < 5:
         return None
@@ -124,22 +124,26 @@ df = df.withColumn("vehicle_color", normalize_color(col("vehicle_color")))
 
 # ### MODEL ###
 
-# ## Vector Assembling
-# assembler = VectorAssembler(
-#     inputCols=["close_def_dist", "shot_clock", "shot_dist"],
-#     outputCol="features"
-# )
-# df_features = assembler.transform(df).cache()
-# df_features.count()
+## Vector Assembling
+assembler = VectorAssembler(
+    inputCols=["vehicle_color", "street_code1", "street_code2", "street_code3", "violation_time"],
+    outputCol="features"
+)
+df_features = assembler.transform(df).cache()
+df_features.count()
 
-# ## Train KMeans
-# kmeans = KMeans(k=4, featuresCol="features", predictionCol="prediction").setSeed(20250512)
-# model = kmeans.fit(df_features)
+## Train KMeans
+kmeans = KMeans(k=4, featuresCol="features", predictionCol="prediction").setSeed(20250512)
+model = kmeans.fit(df_features)
 
 
-# ## Predict
-# predictions = model.transform(df_features)
+## Predict
+predictions = model.transform(df_features)
 
-# ## Evaluate
-# evaluator = ClusteringEvaluator()
-# silhouette = evaluator.evaluate(predictions)
+## Evaluate
+evaluator = ClusteringEvaluator()
+silhouette = evaluator.evaluate(predictions)
+
+## Query search and count per cluster
+
+#groupby cluster, groupby zip code, count()
