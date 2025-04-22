@@ -138,10 +138,10 @@ silhouette = evaluator.evaluate(predictions)
 
 
 
-### AGGREGATIONS AND FILTERING
+### AGGREGATIONS AND FILTERING ###
 
-## Pre-Filter
-PLAYER_FILTER = ["Chris Paul", "Lebron James", "James Harden", "Stephen Curry", ]
+##Pre-Filter
+PLAYER_FILTER = ["Chris Paul", "Lebron James", "James Harden", "Stephen Curry"]
 # predictions
 
 agg_hit_rate = (
@@ -153,14 +153,14 @@ agg_hit_rate = (
       .where(col("player_name").isin(PLAYER_FILTER)) #NOTE: THIS CAN BE COMMENTED OUT
 ).orderBy(asc(col("player_name")), asc("prediction"))
 
-#
+#calculate hit-rate for real
 agg_hit_rate = agg_hit_rate.withColumn("hit_rate", col("made_shots") / col("total_shots"))
 
 
 
-## DISPLAYS ##
+### DISPLAYS ###
 
-# Displaying Evaluator
+## Displaying Evaluator
 print("Silhouette with squared euclidian distance = " + str(silhouette))
 
 ## Display Centers
