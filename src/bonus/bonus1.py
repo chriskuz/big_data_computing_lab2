@@ -31,10 +31,6 @@ def convert_to_24_hour(time_str):
         return None
     return hh
 
-
-
-
-
 #normalizing the color column
 @udf(returnType=StringType())
 def normalize_color(raw_color):
@@ -65,8 +61,8 @@ def normalize_color(raw_color):
 spark = (
     SparkSession.builder
     .appName("kmeans_parking")
-    # .master("local[*]") #DOUBLE CHECK WHAT THIS DOES ON CLOUD
-    # .config("spark.driver.bindAddress", "127.0.0.1") #REMOVE ON CLOUD
+    .master("local[*]") #DOUBLE CHECK WHAT THIS DOES ON CLOUD
+    .config("spark.driver.bindAddress", "127.0.0.1") #REMOVE ON CLOUD
     .getOrCreate()
 )
 
@@ -75,18 +71,15 @@ sc = spark.sparkContext
 sc.setLogLevel("ERROR")  # or "WARN"
 
 
-
-
-
 ### DATA ###
 ## Load Data
 
-# #LOCAL
-# df = spark.read.format("csv").option("header", True).load("../../data/parking_data.csv") #.load(sys.argv[1]) #look into again why sys.argv here
+#LOCAL
+df = spark.read.format("csv").option("header", True).load("../../data/parking_data.csv") #.load(sys.argv[1]) #look into again why sys.argv here
 
-#CLOUD COMMAND
-df_path = sys.argv[1]
-df = spark.read.format("csv").option("header", True).load(df_path)
+# #CLOUD COMMAND
+# df_path = sys.argv[1]
+# df = spark.read.format("csv").option("header", True).load(df_path)
 
 ## Pre Filtering 
 df = (
@@ -206,12 +199,12 @@ for i, center in enumerate(centers):
 predictions.show()
 
 
-## Displaying black car probability
-if total_tickets > 0:
-    black_car_probability = black_tickets / total_tickets
-    print(f"\nEstimated probability a BLACK car gets a ticket at street code 34510, 10030, or 34050: {black_car_probability:.4f}")
-else:
-    print("No tickets found at the specified street codes.")
+# ## Displaying black car probability
+# if total_tickets > 0:
+#     black_car_probability = black_tickets / total_tickets
+#     print(f"\nEstimated probability a BLACK car gets a ticket at street code 34510, 10030, or 34050: {black_car_probability:.4f}")
+# else:
+#     print("No tickets found at the specified street codes.")
 
 ### STOP ###
 spark.stop()
